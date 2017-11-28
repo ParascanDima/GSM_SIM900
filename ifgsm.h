@@ -16,6 +16,7 @@
 /***************************Public Macro Definitions********************************/
 
 #define gsmHttpSendData(data)   gsmTransmit(data)
+#define gsmCompareMessageWith   gsmCompareResponseWith
 
 /***************************Public Type Definitions********************************/
 
@@ -57,8 +58,6 @@ uint8_t  isEmpty(uint8_t* buffer);
 uint8_t* gsmGet_Response(void);
 
 uint8_t  gsmCompareResponseWith(uint8_t* str);
-
-uint8_t  gsmCompareMessageWith(uint8_t* str);
 
 uint8_t  gsmCompareUnexpectRspWith(uint8_t* str);
 

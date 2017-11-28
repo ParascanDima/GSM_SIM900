@@ -9,14 +9,15 @@
 /**************Imports***********************************/
 
 #include "ifgsm.h"
-#include "custom_string.h"
-#include "uart.h"
-#include "Timer.h"
-#include "io.h"
+#include <string.h>
+#include "custom_string.h"    /* You can use the custom module to work with strings */
+//#include "uart.h"             /* Include the UART module */
+//#include "Timer.h"            /* Include the TIMER module */
+//#include "io.h"               /* Include the IO module */
 
 /**************Private Macro Definitions*****************/
 
-
+#define UNEXPECTED_RSP_MSG_LENGTH   40
 
 /**************Private Type Definitions******************/
 
@@ -24,7 +25,7 @@
 
 /**************Private Variable Definitions**************/
 
-static uint8_t unexpectRespBuffer[40];
+static uint8_t unexpectRespBuffer[UNEXPECTED_RSP_MSG_LENGTH];
 
 
 /**************Public Variable Definitions***************/
@@ -61,13 +62,6 @@ uint8_t gsmCompleteResponseReceived(uint8_t* responseBuffer){
     return FindSubStr(responseBuffer, strlen((const char*)responseBuffer), "\r\n", 2);
 }
 
-uint8_t gsmCompareResponseWith(uint8_t* str){
-    return FindInBuffer(str);
-}
-
-uint8_t gsmCompareMessageWith(uint8_t* str){
-    return FindInBuffer(str);
-}
 
 uint8_t gsmCompareUnexpectRspWith(uint8_t* str){
     return FindSubStr(unexpectRespBuffer, strlen((const char*)unexpectRespBuffer), str, strlen((const char*)str));
@@ -87,54 +81,71 @@ void gsmReadUnexpectResponseTo(uint8_t * dest){
 
 void gsmRstPullDown(void)
 {
-    GPIO_setOutputHighOnPin(GPIO_PORT_P1, GSM_RST);
+    /* Set the pin connected to RST of SIM900 to LOW ("0") */
 }
 
 void gsmRstPullUp(void)
 {
-    GPIO_setOutputLowOnPin(GPIO_PORT_P1, GSM_RST);
+    /* Set the pin connected to RST of SIM900 to HIGH ("1") */
 }
 
 void gsmPwrKeyOFF(void)
 {
-    GPIO_setOutputHighOnPin(GPIO_PORT_P1, PWRKEY);
+    /* Set the pin connected to PWRKEY of SIM900 to LOW ("0") */
 }
 
 void gsmPwrKeyON(void)
 {
-    GPIO_setOutputLowOnPin(GPIO_PORT_P1, PWRKEY);
+    /* Set the pin connected to PWRKEY of SIM900 to HIGH ("1") */
 }
 
 /* --------------------------- UART dependent code ---------------------------  */
 
 
 void gsmTransmit(uint8_t* data){
-    uartTransmit(data);
+    /* UART transmit interface */
 }
 
 
 void gsmResponseBufferReset(void){
-    uartRX_Reset();
+    /* Clear the UART buffer interface */
 }
 
 
 uint8_t* gsmGet_Response(){
-    return uartGet_Buffer();
+    /* Get the UART buffer interface */
 }
+
+uint8_t gsmCompareResponseWith(uint8_t* str){
+    /* Verify if "str" string is in UART buffer */
+}
+
 
 
 /* --------------------------- TIMER dependent code ---------------------------  */
 
 void gsmDelay_ms(uint16_t miliseconds){
-    Delay_ms(miliseconds);
+    /* The delay function implemented by using timer */
 }
 
 
 uint8_t gsmCheckTimeout( uint64_t planed_ms ){
-    return Check_Timeout(planed_ms);
+    /* This function check if the planed time reached */
+
+    /* Example:
+
+    if (planed_ms < time_quant_count){
+        tRsp = FALSE;
+    }
+    else{
+        tRsp = TRUE;
+    }
+
+     * */
 }
 
 
 uint64_t gsmPlaneTout(uint16_t planed_ms){
-    return timerPlane_Tout(planed_ms);
+    /* This function get the counter value of type uint64 that is incremented every 1 ms and add to this
+     * "planed_ms" */
 }
